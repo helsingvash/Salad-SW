@@ -60,15 +60,6 @@ export PATH="$PATH:$HOME/.dotnet"
 echo "🌐 Instalando zrok..."
 curl -sSf https://get.openziti.io/install.bash | bash -s zrok
 
-# =========================
-# Configurar token zrok
-# =========================
-
-read -rsp "Cole seu token do zrok: " ZROK_TOKEN
-echo
-
-export ZROK_TOKEN
-
 echo "Instalando PyWavelets"
 python -m pip install PyWavelets pytorch-lightning
 
