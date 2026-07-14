@@ -5,7 +5,7 @@ set -euo pipefail
 # CONFIGURAÇÕES
 # ---------------------------------------------------------------------------
 SWARMUI_PORT=7801
-SWARMUI_SCRIPT=(/SwarmUI/launch-linux.sh --port "${SWARMUI_PORT}")
+SWARMUI_SCRIPT=(SwarmUI/launch-linux.sh --port "${SWARMUI_PORT}")
 
 # Usa o zrok do sistema
 ZROK_BIN="$(command -v zrok)"
@@ -19,8 +19,8 @@ if [ -z "$ZROK_BIN" ]; then
 fi
 
 if [ ! -x "${SWARMUI_SCRIPT[0]}" ]; then
-    echo "[ERRO] launch-linux.sh não encontrado ou sem permissão em /SwarmUI"
-    ls -l /SwarmUI || true
+    echo "[ERRO] launch-linux.sh não encontrado ou sem permissão em SwarmUI"
+    ls -l SwarmUI || true
     exit 1
 fi
 
