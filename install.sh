@@ -49,7 +49,7 @@ fi
 echo "⬇️ Instalando .NET 8..."
 wget -q https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh
 chmod +x dotnet-install.sh
-./dotnet-install.sh --version 8.0.413
+./dotnet-install.sh --version 10.0.101
 
 # Adiciona dotnet ao PATH
 export DOTNET_ROOT="$HOME/.dotnet"
