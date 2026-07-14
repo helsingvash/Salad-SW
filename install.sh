@@ -6,9 +6,10 @@ echo "🚀 Iniciando instalação do SwarmUI..."
 # =========================
 # Atualização do sistema
 # =========================
+
+apt update -y
+apt upgrade -y
 apt install sudo
-sudo apt update -y
-sudo apt upgrade -y
 
 # =========================
 # Dependências do sistema
