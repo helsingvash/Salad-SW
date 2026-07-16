@@ -61,8 +61,8 @@ export PATH="$PATH:$HOME/.dotnet"
 echo "🌐 Instalando zrok..."
 curl -sSf https://get.openziti.io/install.bash | bash -s zrok
 
-echo "Instalando PyWavelets"
-python -m pip install PyWavelets pytorch-lightning
+#echo "Instalando PyWavelets"
+#python -m pip install PyWavelets pytorch-lightning
 
 echo "✅ Instalação do SwarmUI concluída!"
 echo "ℹ️ Reinicie o terminal ou execute: source ~/.bashrc"
