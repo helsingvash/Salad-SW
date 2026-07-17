@@ -4,11 +4,13 @@ set -e
 
 DEST="SwarmUI/dlbackend"
 REPO="https://github.com/comfyanonymous/ComfyUI.git"
-VENV="../venv"    # ajuste conforme necessário
+VENV="venv"
 
+# Cria a pasta de destino
 mkdir -p "$DEST"
 cd "$DEST"
 
+# Clona ou atualiza o ComfyUI
 if [ -d "ComfyUI/.git" ]; then
     echo "Atualizando ComfyUI..."
     cd ComfyUI
@@ -19,9 +21,9 @@ else
     cd ComfyUI
 fi
 
-# Cria o ambiente virtual se não existir
+# Cria o ambiente virtual dentro da pasta do ComfyUI, se necessário
 if [ ! -d "$VENV" ]; then
-    echo "Criando ambiente virtual em $VENV..."
+    echo "Criando ambiente virtual em $(pwd)/$VENV..."
     python3 -m venv "$VENV"
 fi
 
@@ -34,10 +36,17 @@ else
     exit 1
 fi
 
+# Atualiza as ferramentas do pip
 echo "Atualizando pip..."
 python -m pip install --upgrade pip setuptools wheel
 
+# Instala as dependências do ComfyUI
 echo "Instalando dependências..."
 python -m pip install -r requirements.txt
 
-echo "Concluído!"
+echo ""
+echo "=========================================="
+echo "Instalação concluída com sucesso!"
+echo "ComfyUI: $(pwd)"
+echo "Venv: $(pwd)/$VENV"
+echo "=========================================="
