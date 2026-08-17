@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 set -e
 
@@ -149,4 +148,3 @@ echo "source SwarmUI/.venv/bin/activate"
 echo ""
 echo "ℹ️ Se necessário, reinicie o terminal ou execute:"
 echo "source ~/.bashrc"
-```
