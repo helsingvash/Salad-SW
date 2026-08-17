@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 
 set -e
@@ -119,4 +118,3 @@ echo ""
 echo "Para ativar manualmente:"
 echo "source $(pwd)/$VENV/bin/activate"
 echo "=========================================="
-```
