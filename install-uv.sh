@@ -114,7 +114,7 @@ export PATH="$PATH:$HOME/.dotnet"
 # =========================
 
 echo "🌐 Instalando zrok..."
-
+apt install -y gnupg
 curl -sSf https://get.openziti.io/install.bash | bash -s zrok
 
 # =========================
