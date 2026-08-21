@@ -2,15 +2,19 @@
 
 set -e
 
+echo "=========================================="
+echo "   Instalador de Custom Nodes - ComfyUI"
+echo "=========================================="
+echo ""
+
 # ============================================================
-# CONFIGURAÇÃO
+# DIRETÓRIO DO SCRIPT
 # ============================================================
 
-# Diretório onde este script está localizado
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# SwarmUI está na mesma pasta deste script
-SWARM_DIR="$SCRIPT_DIR"
+# SwarmUI está dentro do diretório onde está o script
+SWARM_DIR="$SCRIPT_DIR/SwarmUI"
 
 # ComfyUI dentro do SwarmUI
 COMFY_DIR="$SWARM_DIR/dlbackend/ComfyUI"
@@ -21,48 +25,81 @@ VENV="$COMFY_DIR/venv"
 # Custom nodes
 CUSTOM_NODES="$COMFY_DIR/custom_nodes"
 
-echo ""
-echo "=========================================="
-echo "   Instalador de Custom Nodes - ComfyUI"
-echo "=========================================="
-echo ""
-echo "Script:"
+echo "📂 Diretório do script:"
 echo "$SCRIPT_DIR"
 echo ""
-echo "ComfyUI:"
+
+echo "📂 SwarmUI:"
+echo "$SWARM_DIR"
+echo ""
+
+echo "📂 ComfyUI:"
 echo "$COMFY_DIR"
 echo ""
-echo "Venv:"
+
+echo "📂 Venv:"
 echo "$VENV"
 echo ""
-echo "Custom Nodes:"
+
+echo "📂 Custom Nodes:"
 echo "$CUSTOM_NODES"
 echo ""
 
 # ============================================================
-# VERIFICAR COMANDOS BÁSICOS
+# VERIFICAR SWARMUI
 # ============================================================
 
-echo "🔎 Verificando dependências..."
-
-if ! command -v git >/dev/null 2>&1; then
-    echo "❌ Git não encontrado."
-    echo "Instale o Git antes de continuar."
+if [ ! -d "$SWARM_DIR" ]; then
+    echo "❌ SwarmUI não encontrado:"
+    echo "$SWARM_DIR"
+    echo ""
     exit 1
 fi
 
-if ! command -v curl >/dev/null 2>&1; then
-    echo "❌ curl não encontrado."
-    echo "Instale o curl antes de continuar."
-    exit 1
-fi
-
-echo "✅ Git encontrado: $(git --version)"
-echo "✅ curl encontrado"
+echo "✅ SwarmUI encontrado."
 echo ""
 
 # ============================================================
-# VERIFICAR UV
+# VERIFICAR COMFYUI
+# ============================================================
+
+if [ ! -d "$COMFY_DIR" ]; then
+    echo "❌ ComfyUI não encontrado:"
+    echo "$COMFY_DIR"
+    echo ""
+    exit 1
+fi
+
+echo "✅ ComfyUI encontrado."
+echo ""
+
+# ============================================================
+# VERIFICAR GIT
+# ============================================================
+
+if ! command -v git >/dev/null 2>&1; then
+    echo "❌ Git não encontrado."
+    exit 1
+fi
+
+echo "✅ Git:"
+git --version
+echo ""
+
+# ============================================================
+# VERIFICAR CURL
+# ============================================================
+
+if ! command -v curl >/dev/null 2>&1; then
+    echo "❌ curl não encontrado."
+    exit 1
+fi
+
+echo "✅ curl encontrado."
+echo ""
+
+# ============================================================
+# VERIFICAR / INSTALAR UV
 # ============================================================
 
 if ! command -v uv >/dev/null 2>&1; then
@@ -73,74 +110,27 @@ if ! command -v uv >/dev/null 2>&1; then
 
     curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    # Adicionar possíveis locais do uv ao PATH
     export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-
 fi
 
-# Verificar novamente
 if ! command -v uv >/dev/null 2>&1; then
+    echo "❌ uv não foi encontrado após a instalação."
     echo ""
-    echo "❌ Não foi possível encontrar o uv após a instalação."
-    echo ""
-    echo "Tente manualmente:"
-    echo ""
-    echo 'export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"'
-    echo ""
+    echo 'Tente: export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"'
     exit 1
 fi
 
-echo "✅ uv encontrado:"
+echo "✅ uv:"
 uv --version
-echo ""
-
-# ============================================================
-# VERIFICAR COMFYUI
-# ============================================================
-
-echo "🔎 Verificando ComfyUI..."
-
-if [ ! -d "$COMFY_DIR" ]; then
-
-    echo ""
-    echo "❌ ComfyUI não encontrado!"
-    echo ""
-    echo "Procurado em:"
-    echo "$COMFY_DIR"
-    echo ""
-    echo "Estrutura esperada:"
-    echo ""
-    echo "$SWARM_DIR/"
-    echo "├── nodes-uv.sh"
-    echo "└── dlbackend/"
-    echo "    └── ComfyUI/"
-    echo ""
-    exit 1
-
-fi
-
-echo "✅ ComfyUI encontrado."
 echo ""
 
 # ============================================================
 # VERIFICAR VENV
 # ============================================================
 
-echo "🔎 Verificando ambiente virtual..."
-
 if [ ! -f "$VENV/bin/python" ]; then
-
-    echo ""
-    echo "❌ Python do venv não encontrado:"
-    echo "$VENV/bin/python"
-    echo ""
-
-    if [ -d "$VENV" ]; then
-        echo "A pasta venv existe, mas não parece ser um ambiente virtual válido."
-    else
-        echo "A pasta venv não existe."
-    fi
-
+    echo "❌ Venv do ComfyUI não encontrado:"
+    echo "$VENV"
     echo ""
     exit 1
 fi
@@ -152,7 +142,7 @@ echo ""
 # ATIVAR VENV
 # ============================================================
 
-echo "🐍 Ativando venv do ComfyUI..."
+echo "🐍 Ativando venv..."
 
 source "$VENV/bin/activate"
 
@@ -160,37 +150,22 @@ echo "✅ Venv ativado."
 echo ""
 
 echo "Python:"
-python --version
-
-echo "Python utilizado:"
-which python
+"$VENV/bin/python" --version
 
 echo ""
 
 # ============================================================
-# VERIFICAR UV COM VENV
+# CRIAR CUSTOM NODES
 # ============================================================
-
-echo "🔎 Verificando uv + Python do ComfyUI..."
-
-uv pip --python "$VENV/bin/python" --version
-
-echo ""
-
-# ============================================================
-# CRIAR CUSTOM_NODES
-# ============================================================
-
-echo "📁 Verificando custom_nodes..."
 
 mkdir -p "$CUSTOM_NODES"
 
-echo "✅ Custom nodes:"
+echo "✅ Pasta custom_nodes:"
 echo "$CUSTOM_NODES"
 echo ""
 
 # ============================================================
-# FUNÇÃO DE INSTALAÇÃO
+# FUNÇÃO PARA INSTALAR NODE
 # ============================================================
 
 install_node() {
@@ -202,67 +177,48 @@ install_node() {
 
     echo ""
     echo "=========================================="
-    echo "📦 Node: $FOLDER"
+    echo "📦 Instalando: $FOLDER"
     echo "=========================================="
     echo ""
-
-    # --------------------------------------------------------
-    # ATUALIZAR OU CLONAR
-    # --------------------------------------------------------
 
     if [ -d "$DEST/.git" ]; then
 
         echo "🔄 Node já existe."
-        echo "Atualizando repositório..."
-        echo ""
+        echo "Atualizando..."
 
         git -C "$DEST" pull
-
-    elif [ -d "$DEST" ]; then
-
-        echo "⚠️ A pasta existe, mas não é um repositório Git:"
-        echo "$DEST"
-        echo ""
-
-        echo "Pulando clone para evitar apagar arquivos existentes."
 
     else
 
         echo "⬇️ Clonando:"
         echo "$REPO"
-        echo ""
 
         git clone "$REPO" "$DEST"
 
     fi
 
-    # --------------------------------------------------------
+    # ========================================================
     # REQUIREMENTS
-    # --------------------------------------------------------
+    # ========================================================
 
     if [ -f "$DEST/requirements.txt" ]; then
 
         echo ""
-        echo "📦 Encontrado requirements.txt"
-        echo "Instalando dependências..."
-        echo ""
+        echo "📦 Instalando requirements.txt..."
 
         uv pip install \
             --python "$VENV/bin/python" \
             -r "$DEST/requirements.txt"
 
         echo ""
-        echo "✅ Dependências de $FOLDER instaladas."
+        echo "✅ Dependências instaladas."
 
     else
 
         echo ""
-        echo "ℹ️ $FOLDER não possui requirements.txt."
-        echo "Nenhuma dependência adicional será instalada."
+        echo "ℹ️ Nenhum requirements.txt encontrado."
 
     fi
-
-    echo ""
 }
 
 # ============================================================
@@ -290,41 +246,34 @@ install_node \
     "RES4LYF"
 
 # ============================================================
-# FINALIZAÇÃO
+# FINAL
 # ============================================================
 
 echo ""
 echo "=========================================="
-echo "        ✅ INSTALAÇÃO CONCLUÍDA"
+echo "       ✅ INSTALAÇÃO CONCLUÍDA"
 echo "=========================================="
 echo ""
 
-echo "📂 ComfyUI:"
+echo "SwarmUI:"
+echo "$SWARM_DIR"
+
+echo ""
+echo "ComfyUI:"
 echo "$COMFY_DIR"
-echo ""
 
-echo "📂 Custom Nodes:"
+echo ""
+echo "Custom Nodes:"
 echo "$CUSTOM_NODES"
-echo ""
 
-echo "🐍 Python:"
+echo ""
+echo "Python:"
 "$VENV/bin/python" --version
-echo ""
 
-echo "📦 uv:"
+echo ""
+echo "uv:"
 uv --version
-echo ""
 
-echo "🐍 Python utilizado:"
-"$VENV/bin/python" -c 'import sys; print(sys.executable)'
 echo ""
-
-echo "📁 Venv:"
-echo "$VENV"
-echo ""
-
-echo "=========================================="
-echo "       Todos os nodes foram instalados"
-echo "          ou atualizados com sucesso!"
 echo "=========================================="
 echo ""
