@@ -1,4 +1,4 @@
-```bash
+bash
 #!/bin/bash
 
 set -e
@@ -138,4 +138,3 @@ echo ""
 echo "Venv:"
 echo "$VENV"
 echo "====================================="
-```
